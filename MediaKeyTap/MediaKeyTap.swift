@@ -14,6 +14,11 @@ public enum MediaKey {
     case next
     case rewind
     case fastForward
+    case brightnessUp
+    case brightnessDown
+    case volumeUp
+    case volumeDown
+    case mute
 }
 
 public enum KeyPressMode {
@@ -41,6 +46,17 @@ public class MediaKeyTap {
     let mediaApplicationWatcher: MediaApplicationWatcher
     let internals: MediaKeyTapInternals
     let keyPressMode: KeyPressMode
+    var observeBuiltIn: Bool = true
+    var keysToWatch: [MediaKey] = [
+        .brightnessUp,
+        .brightnessDown,
+        .volumeUp,
+        .volumeDown,
+        .mute,
+        .keyboardBrightnessUp,
+        .keyboardBrightnessDown,
+        .keyboardBrightnessToggle
+    ]
 
     var interceptMediaKeys: Bool {
         didSet {
