@@ -74,6 +74,10 @@ public class MediaKeyTap {
         self.mediaApplicationWatcher = MediaApplicationWatcher()
         self.internals = MediaKeyTapInternals()
         self.keyPressMode = mode
+        self.observeBuiltIn = observeBuiltIn
+        if keys.count > 0 {
+            keysToWatch = keys
+        }
     }
 
     /// Activate the currently running application
@@ -110,6 +114,24 @@ public class MediaKeyTap {
         case NX_KEYTYPE_NEXT: return .next
         case NX_KEYTYPE_REWIND: return .rewind
         case NX_KEYTYPE_FAST: return .fastForward
+        case NX_KEYTYPE_BRIGHTNESS_UP: return .brightnessUp
+        case NX_KEYTYPE_BRIGHTNESS_DOWN: return .brightnessDown
+        case NX_KEYTYPE_SOUND_UP: return .volumeUp
+        case NX_KEYTYPE_SOUND_DOWN: return .volumeDown
+        case NX_KEYTYPE_MUTE: return .mute
+        case NX_KEYTYPE_ILLUMINATION_DOWN: return .keyboardBrightnessDown
+        case NX_KEYTYPE_ILLUMINATION_UP: return .keyboardBrightnessUp
+        case NX_KEYTYPE_ILLUMINATION_TOGGLE: return .keyboardBrightnessUp
+        default: return nil
+        }
+    }
+
+    public static func functionKeyCodeToMediaKey(_ keycode: Keycode) -> MediaKey? {
+        switch keycode {
+        case 107: return (useAlternateBrightnessKeys ? .brightnessDown : nil) // F14
+        case 113: return (useAlternateBrightnessKeys ? .brightnessUp : nil) // F15
+        case 144: return .brightnessUp // Brightness up media key
+        case 145: return .brightnessDown // Brightness down media key
         default: return nil
         }
     }
@@ -128,7 +150,10 @@ public class MediaKeyTap {
 
 extension MediaKeyTap: MediaApplicationWatcherDelegate {
     func updateIsActiveMediaApp(_ active: Bool) {
-        interceptMediaKeys = active
+        let keysMedia: [MediaKey] = [.playPause, .previous, .next, .rewind, .fastForward]
+        if Set(keysToWatch).intersection(Set(keysMedia)).count > 0 {
+            interceptMediaKeys = active
+        }
     }
 
     // When a static whitelisted app starts, we need to restart the tap to ensure that
