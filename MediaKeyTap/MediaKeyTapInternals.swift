@@ -25,9 +25,11 @@ extension EventTapError: CustomStringConvertible {
     }
 }
 
-protocol MediaKeyTapInternalsDelegate {
+protocol MediaKeyTapInternalsDelegate: class {
+    var keysToWatch: [MediaKey] { get set }
+    var observeBuiltIn: Bool { get set }
     func updateInterceptMediaKeys(_ intercept: Bool)
-    func handle(keyEvent: KeyEvent)
+    func handle(keyEvent: KeyEvent, isFunctionKey: Bool, modifiers: NSEvent.ModifierFlags?)
     func isInterceptingMediaKeys() -> Bool
 }
 

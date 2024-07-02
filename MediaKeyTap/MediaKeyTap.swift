@@ -52,10 +52,7 @@ public class MediaKeyTap {
         .brightnessDown,
         .volumeUp,
         .volumeDown,
-        .mute,
-        .keyboardBrightnessUp,
-        .keyboardBrightnessDown,
-        .keyboardBrightnessToggle
+        .mute
     ]
 
     var interceptMediaKeys: Bool {
@@ -68,7 +65,7 @@ public class MediaKeyTap {
 
     // MARK: - Setup
 
-    public init(delegate: MediaKeyTapDelegate, on mode: KeyPressMode = .keyDown) {
+    public init(delegate: MediaKeyTapDelegate, on mode: KeyPressMode = .keyDown, for keys: [MediaKey] = [], observeBuiltIn: Bool = true) {
         self.delegate = delegate
         self.interceptMediaKeys = false
         self.mediaApplicationWatcher = MediaApplicationWatcher()
@@ -119,17 +116,14 @@ public class MediaKeyTap {
         case NX_KEYTYPE_SOUND_UP: return .volumeUp
         case NX_KEYTYPE_SOUND_DOWN: return .volumeDown
         case NX_KEYTYPE_MUTE: return .mute
-        case NX_KEYTYPE_ILLUMINATION_DOWN: return .keyboardBrightnessDown
-        case NX_KEYTYPE_ILLUMINATION_UP: return .keyboardBrightnessUp
-        case NX_KEYTYPE_ILLUMINATION_TOGGLE: return .keyboardBrightnessUp
         default: return nil
         }
     }
 
     public static func functionKeyCodeToMediaKey(_ keycode: Keycode) -> MediaKey? {
         switch keycode {
-        case 107: return (useAlternateBrightnessKeys ? .brightnessDown : nil) // F14
-        case 113: return (useAlternateBrightnessKeys ? .brightnessUp : nil) // F15
+        // case 107: return (useAlternateBrightnessKeys ? .brightnessDown : nil) // F14
+        // case 113: return (useAlternateBrightnessKeys ? .brightnessUp : nil) // F15
         case 144: return .brightnessUp // Brightness up media key
         case 145: return .brightnessDown // Brightness down media key
         default: return nil
