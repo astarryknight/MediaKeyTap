@@ -132,10 +132,12 @@ extension MediaKeyTap: MediaKeyTapInternalsDelegate {
         interceptMediaKeys = intercept
     }
 
-    func handle(keyEvent: KeyEvent) {
-        if let key = keycodeToMediaKey(keyEvent.keycode) {
+    func handle(keyEvent: KeyEvent, isFunctionKey: Bool, modifiers: NSEvent.ModifierFlags?) {
+        if let key = isFunctionKey ? MediaKeyTap.functionKeyCodeToMediaKey(keyEvent.keycode) : MediaKeyTap
+            .keycodeToMediaKey(keyEvent.keycode)
+        {
             if shouldNotifyDelegate(ofEvent: keyEvent) {
-                delegate?.handle(mediaKey: key, event: keyEvent)
+                delegate.handle(mediaKey: key, event: keyEvent, modifiers: modifiers)
             }
         }
     }
